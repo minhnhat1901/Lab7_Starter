@@ -51,12 +51,14 @@ self.addEventListener('fetch', function (event) {
     event.respondWith(caches.open(CACHE_NAME).then(async (cache) => {
       // Respond with the image from the cache or from the network
 
-      return cache.match(event.request).then((cachedResponse) => {
+      cache.match(event.request).then((cachedResponse) => {
         // Return a cached response if we have one
         if (cachedResponse) {
           return cachedResponse;
         }
         else {
+          //            Otherwise fetch the resource, add it to the cache, and return
+          //            network response.
           return fetch(event.request).then((fetchedResponse) => {
             // Add the network response to the cache for later visits
             cache.put(event.request, fetchedResponse.clone());
@@ -68,23 +70,24 @@ self.addEventListener('fetch', function (event) {
       });
     }));
   } else {
-    event.respondWith(caches.open(CACHE_NAME).then(async (cache) => {
-      // Respond with the resource from the cache or from the network
-      return cache.match(event.request).then((cachedResponse) => {
-        // Return a cached response if we have one
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-        else {
-          return fetch(event.request).then((fetchedResponse) => {
-            // Add the network response to the cache for later visits
-            cache.put(event.request, fetchedResponse.clone());
+    return;
+    // event.respondWith(caches.open(CACHE_NAME).then(async (cache) => {
+    //   // Respond with the resource from the cache or from the network
+    //   return cache.match(event.request).then((cachedResponse) => {
+    //     // Return a cached response if we have one
+    //     if (cachedResponse) {
+    //       return cachedResponse;
+    //     }
+    //     else {
+    //       return fetch(event.request).then((fetchedResponse) => {
+    //         // Add the network response to the cache for later visits
+    //         cache.put(event.request, fetchedResponse.clone());
   
-            // Return the network response
-            return fetchedResponse;
-          });
-        }
-      });
-    }));
+    //         // Return the network response
+    //         return fetchedResponse;
+    //       });
+    //     }
+    //   });
+    // }));
   }
 });
