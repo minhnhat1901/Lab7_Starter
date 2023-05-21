@@ -48,43 +48,32 @@ self.addEventListener('fetch', function (event) {
   //            network response.
   if (event.request.destination === 'image') {
     // Open the cache
-    event.respondWith(caches.open(CACHE_NAME).then(async (cache) => {
+    event.respondWith(caches.open(CACHE_NAME).then((cache) => {
       // Respond with the image from the cache or from the network
 
       return cache.match(event.request).then((cachedResponse) => {
-        // Return a cached response if we have one
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-        else {
-          return fetch(event.request).then((fetchedResponse) => {
+          return cachedResponse || fetch(event.request).then((fetchedResponse) => {
             // Add the network response to the cache for later visits
             cache.put(event.request, fetchedResponse.clone());
   
             // Return the network response
             return fetchedResponse;
           });
-        }
-      });
+        });
     }));
   } else {
-    event.respondWith(caches.open(CACHE_NAME).then(async (cache) => {
-      // Respond with the resource from the cache or from the network
+    event.respondWith(caches.open(CACHE_NAME).then((cache) => {
+      // Respond with the image from the cache or from the network
+
       return cache.match(event.request).then((cachedResponse) => {
-        // Return a cached response if we have one
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-        else {
-          return fetch(event.request).then((fetchedResponse) => {
+          return cachedResponse || fetch(event.request).then((fetchedResponse) => {
             // Add the network response to the cache for later visits
             cache.put(event.request, fetchedResponse.clone());
-
+  
             // Return the network response
             return fetchedResponse;
           });
-        }
-      });
+        });
     }));
   }
 });
