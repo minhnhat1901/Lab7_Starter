@@ -61,7 +61,8 @@ self.addEventListener('fetch', function (event) {
           });
         });
     }));
-  } else {
+  } 
+  else {
     event.respondWith(caches.open(CACHE_NAME).then((cache) => {
       // Respond with the image from the cache or from the network
 
