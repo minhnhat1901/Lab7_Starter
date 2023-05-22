@@ -63,17 +63,17 @@ self.addEventListener('fetch', function (event) {
   }))
 
   if (event.request.url.includes('introweb.tech/assets/json/')) {
-    event.respondWith(caches.match(event.request).then(async (response) => {
-      if (response) {
-        return response;
+    event.respondWith(caches.match(event.request).then(async (cacheResponse) => {
+      if (cacheResponse) {
+        return cacheResponse;
       }
-      return fetch(event.request).then(async (response) => {
-        if (response.status === 404) {
+      return fetch(event.request).then(async (fetchResponse) => {
+        if (fetchResponse.status === 404) {
           return caches.match('pages/404.html')
         }
         return caches.open(CACHE_NAME).then(async (cache) => {
-          cache.put(event.request.url, response.clone())
-          return response;
+          cache.put(event.request.url, fetchResponse.clone())
+          return fetchResponse;
         })
       })
     }))
