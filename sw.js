@@ -46,7 +46,7 @@ self.addEventListener('fetch', function (event) {
   // B8. TODO - If the request is in the cache, return with the cached version.
   //            Otherwise fetch the resource, add it to the cache, and return
   //            network response.
-  if (event.request.destination === 'image') {
+  // if (event.request.destination === 'image') {
     // Open the cache
     event.respondWith(caches.open(CACHE_NAME).then((cache) => {
       // Respond with the image from the cache or from the network
@@ -61,20 +61,20 @@ self.addEventListener('fetch', function (event) {
           });
         });
     }));
-  } 
-  else {
-    event.respondWith(caches.open(CACHE_NAME).then((cache) => {
-      // Respond with the image from the cache or from the network
+  // } 
+  // else {
+  //   event.respondWith(caches.open(CACHE_NAME).then((cache) => {
+  //     // Respond with the image from the cache or from the network
 
-      return cache.match(event.request).then((cachedResponse) => {
-          return cachedResponse || fetch(event.request).then((fetchedResponse) => {
-            // Add the network response to the cache for later visits
-            cache.put(event.request, fetchedResponse.clone());
+  //     return cache.match(event.request).then((cachedResponse) => {
+  //         return cachedResponse || fetch(event.request).then((fetchedResponse) => {
+  //           // Add the network response to the cache for later visits
+  //           cache.put(event.request, fetchedResponse.clone());
   
-            // Return the network response
-            return fetchedResponse;
-          });
-        });
-    }));
-  }
+  //           // Return the network response
+  //           return fetchedResponse;
+  //         });
+  //       });
+  //   }));
+  // }
 });
