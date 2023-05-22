@@ -46,33 +46,36 @@ self.addEventListener('fetch', function (event) {
   // B8. TODO - If the request is in the cache, return with the cached version.
   //            Otherwise fetch the resource, add it to the cache, and return
   //            network response.
-  if (event.request.destination === 'image') {
-    // Open the cache
-    event.respondWith(caches.open(CACHE_NAME).then(async (cache) => {
-      // Respond with the image from the cache or from the network
-      return cache.match(event.request).then((cachedResponse) => {
-        return (cachedResponse) ? cachedResponse : fetch(event.request).then((fetchedResponse) => {
-          // Add the network response to the cache for later visits
-          cache.put(event.request, fetchedResponse.clone());
+  event.respondWith(caches.match(event.request).then(async (cacheResponse) => {
+    if (cacheResponse) {
+      return cacheResponse;
+    }
+    
+    return fetch(event.request).then(async (fetchResponse) => {
+      if (fetchResponse.status === 404) {
+        return caches.match('pages/404.html')
+      }
+      return caches.open(CACHE_NAME).then(async (cache) => {
+        cache.put(event.request.url, fetchResponse.clone())
+        return fetchResponse;
+      })
+    })
+  }))
 
-          // Return the network response
-          return fetchedResponse;
-        });
-      });
-    }));
-  }
-  else {
-    event.respondWith(caches.open(CACHE_NAME).then(async (cache) => {
-      // Respond with the image from the cache or from the network
-      return cache.match(event.request).then((cachedResponse) => {
-        return cachedResponse || fetch(event.request).then((fetchedResponse) => {
-          // Add the network response to the cache for later visits
-          cache.put(event.request, fetchedResponse.clone());
-
-          // Return the network response
-          return fetchedResponse;
-        });
-      });
-    }));
+  if (event.request.url.includes('introweb.tech/assets/json/')) {
+    event.respondWith(caches.match(event.request).then(async (response) => {
+      if (response) {
+        return response;
+      }
+      return fetch(event.request).then(async (response) => {
+        if (response.status === 404) {
+          return caches.match('pages/404.html')
+        }
+        return caches.open(CACHE_NAME).then(async (cache) => {
+          cache.put(event.request.url, response.clone())
+          return response;
+        })
+      })
+    }))
   }
 });
