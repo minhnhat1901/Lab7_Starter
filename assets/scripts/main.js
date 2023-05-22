@@ -51,7 +51,7 @@ function initializeServiceWorker() {
       // Steps B3-B6 will be *inside* the event listener's function created in B2
       // B3. TODO - Register './sw.js' as a service worker (The MDN article
       //            "Using Service Workers" will help you here)
-      navigator.serviceWorker.register("sw.js", { scope: "." }) 
+      navigator.serviceWorker.register("./sw.js", { scope: "." }) 
       
       // B4. TODO - Once the service worker has been successfully registered, console
       //            log that it was successful.
@@ -136,7 +136,6 @@ async function getRecipes() {
         console.error(err);
         // A11. TODO - Pass any errors to the Promise's reject() function
         reject(err);
-        return;
       }
     });
   });
