@@ -52,7 +52,7 @@ self.addEventListener('fetch', function (event) {
       // Respond with the image from the cache or from the network
 
       return cache.match(event.request).then((cachedResponse) => {
-          return cachedResponse || fetch(event.request).then((fetchedResponse) => {
+          return (cachedResponse) ? cachedResponse : fetch(event.request).then((fetchedResponse) => {
             // Add the network response to the cache for later visits
             cache.put(event.request, fetchedResponse.clone());
   
